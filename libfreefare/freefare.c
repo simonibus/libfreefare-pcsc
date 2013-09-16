@@ -188,12 +188,6 @@ freefare_tag_new_pcsc (struct pcsc_context *context, const char *reader)
     }
     printf("checking \"CRC\": %s (crc=0x%02x)\n", (crc) ? "fail" : "succeed", crc);
 
-    err = SCardFreeMemory (context->context, pbAttr);
-    if (err)
-    {
-	printf("SCardFreeMemory %lx\n", err);
-    }
-
     /* Allocate memory for the found MIFARE target */
     switch (tag_info->type) {
     case CLASSIC_1K:
@@ -469,7 +463,7 @@ pcsc_list_devices(struct pcsc_context* context, LPSTR *string)
     DWORD size;
     static char empty[] = "\0";
 
-    size = SCardListReaders(context->context, NULL, NULL, &size);
+    err = SCardListReaders(context->context, NULL, NULL, &size);
     str = malloc(sizeof(char) * size);
     if (!str)
     {
@@ -477,7 +471,7 @@ pcsc_list_devices(struct pcsc_context* context, LPSTR *string)
 	*string = empty;
     	return SCARD_E_NO_MEMORY;
     }
-    err = SCardListReaders(context->context, NULL, (LPSTR)&str, &size);
+    err = SCardListReaders(context->context, NULL, str, &size);
     if (err != SCARD_S_SUCCESS)
     {
 	context->readers = NULL;
