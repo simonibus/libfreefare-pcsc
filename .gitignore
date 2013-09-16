@@ -29,6 +29,7 @@ examples/mifare-desfire-ev1-configure-default-key
 examples/mifare-desfire-ev1-configure-random-uid
 examples/mifare-desfire-format
 examples/mifare-desfire-info
+examples/mifare-desfire-info-pcsc
 examples/mifare-desfire-read-ndef
 examples/mifare-desfire-write-ndef
 examples/mifare-ultralight-info
