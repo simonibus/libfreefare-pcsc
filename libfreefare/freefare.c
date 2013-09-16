@@ -106,9 +106,9 @@ freefare_tag_new_pcsc (struct pcsc_context *context, const char *reader)
     enum mifare_tag_type tagtype;
     MifareTag tag;
     bool found = false;
-    LONG l;
-    LPBYTE pbAttr = NULL;
-    DWORD atrlen = SCARD_AUTOALLOCATE;
+    LONG err;
+    unsigned char pbAttr[MAX_ATR_SIZE];
+    DWORD atrlen = sizeof(pbAttr);
     DWORD dwActiveProtocol;
     SCARDHANDLE hCard;
     uint8_t buf[] = { 0xFF, 0xCA, 0x00, 0x00, 0x00 };
@@ -116,74 +116,68 @@ freefare_tag_new_pcsc (struct pcsc_context *context, const char *reader)
     SCARD_IO_REQUEST ioreq;
     DWORD retlen;
 
-    l = SCardConnect(context->context, reader, SCARD_SHARE_SHARED, 
+    err = SCardConnect(context->context, reader, SCARD_SHARE_SHARED, 
 			SCARD_PROTOCOL_T0, &hCard, &dwActiveProtocol);
-    if(l != SCARD_S_SUCCESS)
-    {
+    if(err)
 	return NULL;
-    }
 
     /* get and card uid */
     retlen = sizeof(ret);
-    l = SCardTransmit(hCard, SCARD_PCI_T0, buf, sizeof(buf), &ioreq, ret, &retlen);
-    if (l != SCARD_S_SUCCESS)
+    err = SCardTransmit(hCard, SCARD_PCI_T0, buf, sizeof(buf), &ioreq, ret, &retlen);
+    if (err)
     {
 	fprintf(stderr, "freefare_tag_new_pcsc: getting uid failed\n");
 	return NULL;
     }
 
-    LONG err;
-    err = SCardGetAttrib ( hCard , SCARD_ATTR_ATR_STRING, (LPBYTE) &pbAttr, &atrlen );
-    
+    err = SCardGetAttrib ( hCard , SCARD_ATTR_ATR_STRING, (unsigned char *) &pbAttr, &atrlen );
     if (err)
     {
 	printf("SCardGetAttrib: err=%lx  %s\n ", err, pcsc_stringify_error(err));
 	return NULL;
     }
 
-	found = false;
-	for (int i = 0; pcsc_supported_atrs[i].len != 0; i++){
-		if (atrlen != pcsc_supported_atrs[i].len) { 
-			continue;
-		}
-		if ( pcsc_supported_atrs[i].mask == NULL ){
-			/* no bitmask here */
-			if ( ! memcmp(pcsc_supported_atrs[i].tag ,pbAttr ,atrlen) ) {
-				tagtype = pcsc_supported_atrs[i].type;
-				found = true;
-				break;
-			}
-		} else {
-			/* bitmask case */
-			int c;
-			for (c = 0; c < pcsc_supported_atrs[i].len; c++){
-				if (pcsc_supported_atrs[i].tag[c] & pcsc_supported_atrs[i].mask[c] == pbAttr[c] & pcsc_supported_atrs[i].mask[c]){
-					break;
-				}
-			}
-			if (c == pcsc_supported_atrs[i].len) {
-				tagtype = pcsc_supported_atrs[i].type;
-				found = true;
-				break;
-			}
-		}
-	}	
-	if (!found) { 
-		return NULL;
+    found = false;
+    for (int i = 0; pcsc_supported_atrs[i].len != 0; i++){
+	if (atrlen != pcsc_supported_atrs[i].len) { 
+	    continue;
 	}
-	printf("tagtype: %d\n", tagtype);
-	
-	found = false;
-	
-    
-    for (size_t i = 0; i < sizeof (supported_tags) / sizeof (struct supported_tag); i++) {
-    	if(supported_tags[i].type == tagtype) {
-		tag_info = &(supported_tags[i]);
+	if ( pcsc_supported_atrs[i].mask == NULL ){
+	    /* no bitmask here */
+	    if ( ! memcmp(pcsc_supported_atrs[i].tag ,pbAttr ,atrlen) ) {
+		tagtype = pcsc_supported_atrs[i].type;
 		found = true;
 		break;
+	    }
+	} else {
+	    /* bitmask case */
+	    int c;
+	    for (c = 0; c < pcsc_supported_atrs[i].len; c++){
+		if (pcsc_supported_atrs[i].tag[c] & pcsc_supported_atrs[i].mask[c] == pbAttr[c] & pcsc_supported_atrs[i].mask[c]){
+		    break;
+		}
+	    }
+	    if (c == pcsc_supported_atrs[i].len) {
+		tagtype = pcsc_supported_atrs[i].type;
+		found = true;
+		break;
+	    }
+	}
+    }	
+    if (!found) { 
+	return NULL;
+    }
+    printf("tagtype: %d\n", tagtype);
+    found = false;	
+
+    for (size_t i = 0; i < sizeof (supported_tags) / sizeof (struct supported_tag); i++) {
+    	if(supported_tags[i].type == tagtype) {
+	    tag_info = &(supported_tags[i]);
+	    found = true;
+	    break;
 	}
     }
-    
+
     if(!found)
     	return NULL;
 
@@ -199,8 +193,6 @@ freefare_tag_new_pcsc (struct pcsc_context *context, const char *reader)
     {
 	printf("SCardFreeMemory %lx\n", err);
     }
-    
-
 
     /* Allocate memory for the found MIFARE target */
     switch (tag_info->type) {
@@ -472,23 +464,31 @@ pcsc_exit(struct pcsc_context* context)
 LONG
 pcsc_list_devices(struct pcsc_context* context, LPSTR *string)
 {
-	LONG err;
-	LPSTR str = NULL;
-	DWORD size;
-	static char empty[] = "\0";
-	size = SCARD_AUTOALLOCATE;
-	err = SCardListReaders(context->context, NULL, (LPSTR)&str, &size);
-	if (err != SCARD_S_SUCCESS)
-	{
-		context->readers = NULL;
-		*string = empty;
-	}
-	else
-	{
-		*string = str;
-		context->readers = str;
-	}
-	return err;
+    LONG err;
+    LPSTR str = NULL;
+    DWORD size;
+    static char empty[] = "\0";
+
+    size = SCardListReaders(context->context, NULL, NULL, &size);
+    str = malloc(sizeof(char) * size);
+    if (!str)
+    {
+    	context->readers = NULL;
+	*string = empty;
+    	return SCARD_E_NO_MEMORY;
+    }
+    err = SCardListReaders(context->context, NULL, (LPSTR)&str, &size);
+    if (err != SCARD_S_SUCCESS)
+    {
+	context->readers = NULL;
+	*string = empty;
+    }
+    else
+    {
+	*string = str;
+	context->readers = str;
+    }
+    return err;
 }
 
 /*
