@@ -65,7 +65,7 @@ main(int argc, char *argv[])
     
     reader = str;
 
-    for (size_t d = 0; d < device_count; d++) 
+    while(*reader != '\0')
     {
 	tags = freefare_get_tags_pcsc (context, reader);
 	if (!tags) {
@@ -152,10 +152,8 @@ main(int argc, char *argv[])
 	    mifare_desfire_disconnect (tags[i]);
 	}
 
-        while(*reader != '\0') // goto next reader for the next loop
-	{
-	    reader += strlen(reader) + 1;
-	}
+
+	reader += strlen(reader) + 1;
 
 	freefare_free_tags (tags);
     }
