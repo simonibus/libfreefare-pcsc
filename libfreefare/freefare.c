@@ -391,7 +391,18 @@ freefare_strerror (MifareTag tag)
     }
     else // we use the pcsc protocol
     {
-	p = (const char*) pcsc_stringify_error(tag->lastPCSCerror);
+	if (tag->lastPCSCerror != 0){
+	    p = (const char*) pcsc_stringify_error(tag->lastPCSCerror);
+    	    return p;
+	} else {
+	     if (tag->tag_info->type == DESFIRE) {
+		if (MIFARE_DESFIRE (tag)->last_pcd_error) {
+		    p = mifare_desfire_error_lookup (MIFARE_DESFIRE (tag)->last_pcd_error);
+		} else if (MIFARE_DESFIRE (tag)->last_picc_error) {
+		    p = mifare_desfire_error_lookup (MIFARE_DESFIRE (tag)->last_picc_error);
+		}   
+	    }   
+	}
     }
     return p;
 }
