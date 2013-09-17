@@ -322,13 +322,11 @@ mifare_desfire_connect (MifareTag tag)
 	if(SCARD_S_SUCCESS != tag->lastPCSCerror)
 	{
 	    errno = EIO;
-	    fprintf(stderr, "szReader: %s\n", tag->szReader);
-	    fprintf(stderr, "borked %lx\n", tag->lastPCSCerror);
 	    return -1;
 	}
 	
     }
-  
+ 
     tag->active = 1;
     free (MIFARE_DESFIRE (tag)->session_key);
     MIFARE_DESFIRE (tag)->session_key = NULL;

@@ -104,17 +104,17 @@ freefare_tag_new_pcsc (struct pcsc_context *context, const char *reader)
 {
     struct supported_tag *tag_info = NULL;
     enum mifare_tag_type tagtype;
-    MifareTag tag;
     bool found = false;
-    LONG err;
-    unsigned char pbAttr[MAX_ATR_SIZE];
-    DWORD atrlen = sizeof(pbAttr);
-    DWORD dwActiveProtocol;
-    SCARDHANDLE hCard;
     uint8_t buf[] = { 0xFF, 0xCA, 0x00, 0x00, 0x00 };
     uint8_t ret[12];
-    SCARD_IO_REQUEST ioreq;
+    unsigned char pbAttr[MAX_ATR_SIZE];
+    MifareTag tag;
+    LONG err;
+    DWORD atrlen = sizeof(pbAttr);
+    DWORD dwActiveProtocol;
     DWORD retlen;
+    SCARDHANDLE hCard;
+    SCARD_IO_REQUEST ioreq;
 
     err = SCardConnect(context->context, reader, SCARD_SHARE_SHARED, 
 			SCARD_PROTOCOL_T0, &hCard, &dwActiveProtocol);
@@ -126,14 +126,12 @@ freefare_tag_new_pcsc (struct pcsc_context *context, const char *reader)
     err = SCardTransmit(hCard, SCARD_PCI_T0, buf, sizeof(buf), &ioreq, ret, &retlen);
     if (err)
     {
-	fprintf(stderr, "freefare_tag_new_pcsc: getting uid failed\n");
 	return NULL;
     }
 
     err = SCardGetAttrib ( hCard , SCARD_ATTR_ATR_STRING, (unsigned char *) &pbAttr, &atrlen );
     if (err)
     {
-	printf("SCardGetAttrib: err=%lx  %s\n ", err, pcsc_stringify_error(err));
 	return NULL;
     }
 
@@ -167,11 +165,10 @@ freefare_tag_new_pcsc (struct pcsc_context *context, const char *reader)
     if (!found) { 
 	return NULL;
     }
-    printf("tagtype: %d\n", tagtype);
-    found = false;	
 
+    found = false;
     for (size_t i = 0; i < sizeof (supported_tags) / sizeof (struct supported_tag); i++) {
-    	if(supported_tags[i].type == tagtype) {
+	if(supported_tags[i].type == tagtype) {
 	    tag_info = &(supported_tags[i]);
 	    found = true;
 	    break;
@@ -179,14 +176,15 @@ freefare_tag_new_pcsc (struct pcsc_context *context, const char *reader)
     }
 
     if(!found)
-    	return NULL;
+	return NULL;
 
     char crc = 0x00;
     for (int crc_count = 1 /*! 1. Byte wird ignoriert*/ ; crc_count < atrlen; crc_count++ )
     {
 	crc ^= pbAttr[crc_count];
     }
-    printf("checking \"CRC\": %s (crc=0x%02x)\n", (crc) ? "fail" : "succeed", crc);
+    if (crc)
+    	return NULL;
 
     /* Allocate memory for the found MIFARE target */
     switch (tag_info->type) {
@@ -220,7 +218,7 @@ freefare_tag_new_pcsc (struct pcsc_context *context, const char *reader)
     FILL_SZREADER(tag, reader);
 
     tag->lastPCSCerror = SCardDisconnect(tag->hCard, SCARD_LEAVE_CARD);
-    
+
     return tag;
 }
 
@@ -298,20 +296,17 @@ freefare_get_tags (nfc_device *device)
 MifareTag *
 freefare_get_tags_pcsc (struct pcsc_context *context, const char *reader)
 {
-    MifareTag 	*tags = NULL;
+    MifareTag *tags = NULL;
     
     tags = malloc(2*sizeof (MifareTag));
     if(!tags)
     {
-	fprintf(stderr, "freefare_get_tags_pcsc: malloc failed !!\n");
 	return NULL;
     }
     tags[0] = freefare_tag_new_pcsc(context, reader);
     tags[1] = NULL;
     if(tags[0] == NULL)
     	return NULL;
-
-    
 
     return tags;
 }

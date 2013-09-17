@@ -271,7 +271,6 @@ mifare_classic_connect (MifareTag tag)
 	if(SCARD_S_SUCCESS != tag->lastPCSCerror)
 	{
 	    errno = EIO;
-	    fprintf(stderr, "borked %lx\n", tag->lastPCSCerror);
 	    return -1;
 	}
 	tag->active = 1;
