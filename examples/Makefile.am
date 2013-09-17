@@ -7,6 +7,7 @@ bin_PROGRAMS = mifare-classic-format \
 	       mifare-classic-write-ndef \
 	       mifare-classic-read-ndef \
 	       mifare-desfire-access \
+	       mifare-desfire-access-pcsc \
 	       mifare-desfire-create-ndef \
 	       mifare-desfire-create-ndef-pcsc \
 	       mifare-desfire-ev1-configure-ats \
@@ -34,6 +35,9 @@ mifare_classic_write_ndef_LDADD = $(top_builddir)/libfreefare/libfreefare.la
 
 mifare_desfire_access_SOURCES = mifare-desfire-access.c
 mifare_desfire_access_LDADD = $(top_builddir)/libfreefare/libfreefare.la
+
+mifare_desfire_access_pcsc_SOURCES = mifare-desfire-access-pcsc.c
+mifare_desfire_access_pcsc_LDADD = $(top_builddir)/libfreefare/libfreefare.la
 
 mifare_desfire_create_ndef_SOURCES = mifare-desfire-create-ndef.c
 mifare_desfire_create_ndef_LDADD = $(top_builddir)/libfreefare/libfreefare.la

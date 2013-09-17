@@ -23,6 +23,7 @@ examples/mifare-classic-format
 examples/mifare-classic-read-ndef
 examples/mifare-classic-write-ndef
 examples/mifare-desfire-access
+examples/mifare-desfire-access-pcsc
 examples/mifare-desfire-create-ndef
 examples/mifare-desfire-create-ndef-pcsc
 examples/mifare-desfire-ev1-configure-ats
