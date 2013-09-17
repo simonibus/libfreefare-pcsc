@@ -15,6 +15,7 @@ bin_PROGRAMS = mifare-classic-format \
 	       mifare-desfire-info \
 	       mifare-desfire-info-pcsc \
 	       mifare-desfire-read-ndef \
+	       mifare-desfire-read-ndef-pcsc \
 	       mifare-desfire-write-ndef \
 	       mifare-ultralight-info \
 	       mifare-ultralight-info-pcsc
@@ -54,6 +55,9 @@ mifare_desfire_info_pcsc_LDADD = $(top_builddir)/libfreefare/libfreefare.la -lm
 
 mifare_desfire_read_ndef_SOURCES = mifare-desfire-read-ndef.c
 mifare_desfire_read_ndef_LDADD = $(top_builddir)/libfreefare/libfreefare.la
+
+mifare_desfire_read_ndef_pcsc_SOURCES = mifare-desfire-read-ndef-pcsc.c
+mifare_desfire_read_ndef_pcsc_LDADD = $(top_builddir)/libfreefare/libfreefare.la
 
 mifare_desfire_write_ndef_SOURCES = mifare-desfire-write-ndef.c
 mifare_desfire_write_ndef_LDADD = $(top_builddir)/libfreefare/libfreefare.la
