@@ -34,3 +34,4 @@ examples/mifare-desfire-read-ndef
 examples/mifare-desfire-read-ndef-pcsc
 examples/mifare-desfire-write-ndef
 examples/mifare-ultralight-info
+examples/mifare-ultralight-info-pcsc
