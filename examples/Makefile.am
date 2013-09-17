@@ -12,6 +12,7 @@ bin_PROGRAMS = mifare-classic-format \
 	       mifare-desfire-create-ndef-pcsc \
 	       mifare-desfire-ev1-configure-ats \
 	       mifare-desfire-ev1-configure-default-key \
+	       mifare-desfire-ev1-configure-default-key-pcsc \
 	       mifare-desfire-ev1-configure-random-uid \
 	       mifare-desfire-format \
 	       mifare-desfire-format-pcsc \
@@ -50,6 +51,9 @@ mifare_desfire_ev1_configure_ats_LDADD = $(top_builddir)/libfreefare/libfreefare
 
 mifare_desfire_ev1_configure_default_key_SOURCES = mifare-desfire-ev1-configure-default-key.c
 mifare_desfire_ev1_configure_default_key_LDADD = $(top_builddir)/libfreefare/libfreefare.la
+
+mifare_desfire_ev1_configure_default_key_pcsc_SOURCES = mifare-desfire-ev1-configure-default-key-pcsc.c
+mifare_desfire_ev1_configure_default_key_pcsc_LDADD = $(top_builddir)/libfreefare/libfreefare.la
 
 mifare_desfire_ev1_configure_random_uid_SOURCES = mifare-desfire-ev1-configure-random-uid.c
 mifare_desfire_ev1_configure_random_uid_LDADD = $(top_builddir)/libfreefare/libfreefare.la
