@@ -153,7 +153,7 @@ freefare_tag_new_pcsc (struct pcsc_context *context, const char *reader)
 	    /* bitmask case */
 	    int c;
 	    for (c = 0; c < pcsc_supported_atrs[i].len; c++){
-		if (pcsc_supported_atrs[i].tag[c] & pcsc_supported_atrs[i].mask[c] == pbAttr[c] & pcsc_supported_atrs[i].mask[c]){
+		if (pcsc_supported_atrs[i].tag[c] & pcsc_supported_atrs[i].mask[c] != pbAttr[c] & pcsc_supported_atrs[i].mask[c]){
 		    break;
 		}
 	    }
