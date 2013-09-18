@@ -4,7 +4,7 @@ manipulations.
 Supported tags:
   - Mifare Classic 1k
   - Mifare Classic 4k
-  - Mifare DESFire 2K/4K/8K
+  - Mifare DESFire 2K/4K/8K (also via PC/SC)
   - Mifare DESFire EV1
   - Mifare Ultralight
   - Mifare UltralightC
