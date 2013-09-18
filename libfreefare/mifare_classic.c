@@ -105,7 +105,7 @@
 	{ \
 	    SCARD_IO_REQUEST __pcsc_rcv_pci; \
 	    DWORD __pcsc_recv_len = __##res##_size + 1; \
-	    if ((SCARD_S_SUCCESS != SCardTransmit(tag->hCard, SCARD_PCI_T0, msg, __##msg##_n, &__pcsc_rcv_pci, (LPBYTE)&_res, &__pcsc_recv_len)) < 0) \
+	    if (SCARD_S_SUCCESS != SCardTransmit(tag->hCard, SCARD_PCI_T0, msg, __##msg##_n, &__pcsc_rcv_pci, (LPBYTE)&_res, &__pcsc_recv_len)) \
 	    { \
 	    	if (disconnect) \
 		{ \
