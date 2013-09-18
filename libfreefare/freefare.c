@@ -199,14 +199,18 @@ freefare_tag_new_pcsc (struct pcsc_context *context, const char *reader)
     switch (tag_info->type) {
     case CLASSIC_1K:
     case CLASSIC_4K:
-	tag = mifare_classic_tag_new ();
+	return NULL;
+	/* classic tags not yet supported with PCSC */
+	/* tag = mifare_classic_tag_new (); */
 	break;
     case DESFIRE:
 	tag = mifare_desfire_tag_new ();
 	break;
     case ULTRALIGHT:
     case ULTRALIGHT_C:
-	tag = mifare_ultralight_tag_new ();
+	return NULL;
+	/* ultralight tags not yet supported with PCSC */
+	/* tag = mifare_ultralight_tag_new (); */
 	break;
     }
 
