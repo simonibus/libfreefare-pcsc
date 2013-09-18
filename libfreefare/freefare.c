@@ -21,8 +21,8 @@
 #include <string.h>
 
 #include <freefare.h>
-#include <winscard.h>
 #include <reader.h>
+
 #include "freefare_internal.h"
 
 #include "freefare_pcsc_tags.h"

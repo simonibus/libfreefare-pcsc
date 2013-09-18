@@ -25,7 +25,13 @@
 #include <stdint.h>
 
 #include <nfc/nfc.h>
+
+#ifdef __APPLE__
+#include <PCSC/winscard.h>
+#include <PCSC/wintypes.h>
+#else
 #include <winscard.h>
+#endif
 
 #ifdef __cplusplus
     extern "C" {
