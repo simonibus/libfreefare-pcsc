@@ -114,16 +114,25 @@ freefare_tag_new_pcsc (struct pcsc_context *context, const char *reader)
     DWORD dwActiveProtocol;
     DWORD retlen;
     SCARDHANDLE hCard;
+    SCARD_IO_REQUEST sendpci;
     SCARD_IO_REQUEST ioreq;
 
     err = SCardConnect(context->context, reader, SCARD_SHARE_SHARED, 
-			SCARD_PROTOCOL_T0, &hCard, &dwActiveProtocol);
+			SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1, &hCard, &dwActiveProtocol);
     if(err)
 	return NULL;
 
+    switch (dwActiveProtocol)
+    {
+	case SCARD_PROTOCOL_T0: sendpci = *SCARD_PCI_T0;
+	     break;
+	case SCARD_PROTOCOL_T1: sendpci = *SCARD_PCI_T1;
+	     break;
+    }
+
     /* get and card uid */
     retlen = sizeof(ret);
-    err = SCardTransmit(hCard, SCARD_PCI_T0, buf, sizeof(buf), &ioreq, ret, &retlen);
+    err = SCardTransmit(hCard, &sendpci, buf, sizeof(buf), &ioreq, ret, &retlen);
     if (err)
     {
 	return NULL;

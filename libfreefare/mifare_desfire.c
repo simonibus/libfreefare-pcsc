@@ -186,7 +186,7 @@ static ssize_t	 read_data (MifareTag tag, uint8_t command, uint8_t file_no, off_
 	if (tag->device == NULL) { /* pcsc branch */ \
 		SCARD_IO_REQUEST __pcsc_rcv_pci; \
 		DWORD __pcsc_recv_len = __##res##_size + 1; \
-		if (SCARD_S_SUCCESS != SCardTransmit(tag->hCard, SCARD_PCI_T0, __msg, __len, &__pcsc_rcv_pci, __res, &__pcsc_recv_len)) { \
+		if (SCARD_S_SUCCESS != SCardTransmit(tag->hCard, &tag->pioSendPci, __msg, __len, &__pcsc_rcv_pci, __res, &__pcsc_recv_len)) { \
 			return errno = EIO, -1; \
 		} \
 		_res = __pcsc_recv_len; \
@@ -317,14 +317,20 @@ mifare_desfire_connect (MifareTag tag)
 	DWORD	dwActiveProtocol;
 	
 	tag->lastPCSCerror = SCardConnect(tag->hContext, tag->szReader, SCARD_SHARE_SHARED, 
-						SCARD_PROTOCOL_T0, &(tag->hCard), &dwActiveProtocol);
-
+						SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1, &(tag->hCard), &dwActiveProtocol);
 	if(SCARD_S_SUCCESS != tag->lastPCSCerror)
 	{
 	    errno = EIO;
 	    return -1;
 	}
-	
+
+	switch(dwActiveProtocol)
+	{
+	    case SCARD_PROTOCOL_T0: tag->pioSendPci = *SCARD_PCI_T0;
+	         break;
+	    case SCARD_PROTOCOL_T1: tag->pioSendPci = *SCARD_PCI_T1;
+	         break;
+	}
     }
  
     tag->active = 1;
