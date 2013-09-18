@@ -4,8 +4,11 @@ AM_CFLAGS = -I. -I$(top_srcdir)/libfreefare @LIBNFC_CFLAGS@ @PCSC_CFLAGS@
 AM_LDFLAGS = @LIBNFC_LIBS@ @PCSC_LIBS@
 
 bin_PROGRAMS = mifare-classic-format \
+	       mifare-classic-format-pcsc \
 	       mifare-classic-write-ndef \
+	       mifare-classic-write-ndef-pcsc \
 	       mifare-classic-read-ndef \
+	       mifare-classic-read-ndef-pcsc \
 	       mifare-desfire-access \
 	       mifare-desfire-access-pcsc \
 	       mifare-desfire-create-ndef \
@@ -28,11 +31,20 @@ bin_PROGRAMS = mifare-classic-format \
 mifare_classic_format_SOURCES = mifare-classic-format.c
 mifare_classic_format_LDADD = $(top_builddir)/libfreefare/libfreefare.la
 
+mifare_classic_format_pcsc_SOURCES = mifare-classic-format.c
+mifare_classic_format_pcsc_LDADD = $(top_builddir)/libfreefare/libfreefare.la
+
 mifare_classic_read_ndef_SOURCES = mifare-classic-read-ndef.c
 mifare_classic_read_ndef_LDADD = $(top_builddir)/libfreefare/libfreefare.la
 
+mifare_classic_read_ndef_pcsc_SOURCES = mifare-classic-read-ndef.c
+mifare_classic_read_ndef_pcsc_LDADD = $(top_builddir)/libfreefare/libfreefare.la
+
 mifare_classic_write_ndef_SOURCES = mifare-classic-write-ndef.c
 mifare_classic_write_ndef_LDADD = $(top_builddir)/libfreefare/libfreefare.la
+
+mifare_classic_write_ndef_pcsc_SOURCES = mifare-classic-write-ndef.c
+mifare_classic_write_ndef_pcsc_LDADD = $(top_builddir)/libfreefare/libfreefare.la
 
 mifare_desfire_access_SOURCES = mifare-desfire-access.c
 mifare_desfire_access_LDADD = $(top_builddir)/libfreefare/libfreefare.la
