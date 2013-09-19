@@ -20,7 +20,9 @@ ltmain.sh
 missing
 stamp-h1
 examples/mifare-classic-format
+examples/mifare-classic-format-pcsc
 examples/mifare-classic-read-ndef
+examples/mifare-classic-read-ndef-pcsc
 examples/mifare-classic-write-ndef
 examples/mifare-classic-write-ndef-pcsc
 examples/mifare-desfire-access
@@ -28,9 +30,11 @@ examples/mifare-desfire-access-pcsc
 examples/mifare-desfire-create-ndef
 examples/mifare-desfire-create-ndef-pcsc
 examples/mifare-desfire-ev1-configure-ats
+examples/mifare-desfire-ev1-configure-ats-pcsc
 examples/mifare-desfire-ev1-configure-default-key
 examples/mifare-desfire-ev1-configure-default-key-pcsc
 examples/mifare-desfire-ev1-configure-random-uid
+examples/mifare-desfire-ev1-configure-random-uid-pcsc
 examples/mifare-desfire-format
 examples/mifare-desfire-format-pcsc
 examples/mifare-desfire-info
