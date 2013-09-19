@@ -104,7 +104,7 @@
 	else /* pcsc way */ \
 	{ \
 	    SCARD_IO_REQUEST __pcsc_rcv_pci; \
-	    DWORD __pcsc_recv_len = __##res##_size + 1; \
+	    DWORD __pcsc_recv_len = __##res##_size; \
 	    if (SCARD_S_SUCCESS != SCardTransmit(tag->hCard, SCARD_PCI_T0, msg, __##msg##_n, &__pcsc_rcv_pci, (LPBYTE)&_res, &__pcsc_recv_len)) \
 	    { \
 	    	if (disconnect) \
