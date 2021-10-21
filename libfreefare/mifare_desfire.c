@@ -196,6 +196,9 @@ static ssize_t	 read_data (MifareTag tag, uint8_t command, uint8_t file_no, off_
 	    	    return errno = EIO, -1; \
 		} \
 	} \
+	if (_res == 0) { \
+		return errno = EIO, -1; \
+	} \
 	__##res##_n = _res; \
 	DEBUG_XFER (__res, __##res##_n, "<=== "); \
 	res[__##res##_n-2] = __res[__##res##_n-1]; \
