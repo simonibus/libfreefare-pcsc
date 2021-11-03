@@ -844,7 +844,6 @@ mifare_desfire_get_application_ids (MifareTag tag, MifareDESFireAID *aids[], siz
 
     *count = (sn - 1)/3;
 
-    *aids = malloc (sn - 1);
     if (!(*aids = malloc ((*count + 1) * sizeof (MifareDESFireAID))))
 	return -1;
 
