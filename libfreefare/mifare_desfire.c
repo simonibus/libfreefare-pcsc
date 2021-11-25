@@ -367,7 +367,7 @@ mifare_desfire_disconnect (MifareTag tag)
     }
     else // pcsc way
     {
-	tag->lastPCSCerror = SCardDisconnect(tag->hCard, SCARD_LEAVE_CARD);
+	tag->lastPCSCerror = SCardDisconnect(tag->hCard, SCARD_RESET_CARD);
 	if(SCARD_S_SUCCESS == tag->lastPCSCerror) 
 	{
 	    tag->active = 0;

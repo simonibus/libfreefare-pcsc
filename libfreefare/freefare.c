@@ -230,7 +230,7 @@ freefare_tag_new_pcsc (struct pcsc_context *context, const char *reader)
     tag->tag_info = tag_info;
     FILL_SZREADER(tag, reader);
 
-    tag->lastPCSCerror = SCardDisconnect(tag->hCard, SCARD_LEAVE_CARD);
+    tag->lastPCSCerror = SCardDisconnect(tag->hCard, SCARD_RESET_CARD);
 
     return tag;
 }
