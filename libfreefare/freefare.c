@@ -456,6 +456,7 @@ pcsc_init(struct pcsc_context** context)
 	err = SCardEstablishContext(SCARD_SCOPE_SYSTEM, NULL, NULL, &con->context);
 	if (err != SCARD_S_SUCCESS)
 	{
+    free(con);
 		*context = NULL;
 		return;
 	}
