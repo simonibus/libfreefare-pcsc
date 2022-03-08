@@ -230,7 +230,7 @@ freefare_tag_new_pcsc (struct pcsc_context *context, const char *reader)
     tag->tag_info = tag_info;
     FILL_SZREADER(tag, reader);
 
-    tag->lastPCSCerror = SCardDisconnect(tag->hCard, SCARD_LEAVE_CARD);
+    tag->lastPCSCerror = SCardDisconnect(tag->hCard, SCARD_RESET_CARD);
 
     return tag;
 }
@@ -310,16 +310,19 @@ MifareTag *
 freefare_get_tags_pcsc (struct pcsc_context *context, const char *reader)
 {
     MifareTag *tags = NULL;
+
+    MifareTag tag = freefare_tag_new_pcsc(context, reader);
+    if(tag == NULL) {
+    	return NULL;
+    }
     
     tags = malloc(2*sizeof (MifareTag));
     if(!tags)
     {
 	return NULL;
     }
-    tags[0] = freefare_tag_new_pcsc(context, reader);
+    tags[0] = tag;
     tags[1] = NULL;
-    if(tags[0] == NULL)
-    	return NULL;
 
     return tags;
 }
@@ -451,8 +454,9 @@ pcsc_init(struct pcsc_context** context)
 	LONG err;
 	struct pcsc_context *con =  malloc(sizeof(struct pcsc_context));
 	err = SCardEstablishContext(SCARD_SCOPE_SYSTEM, NULL, NULL, &con->context);
-	if (err < 0)
+	if (err != SCARD_S_SUCCESS)
 	{
+    free(con);
 		*context = NULL;
 		return;
 	}
@@ -468,6 +472,7 @@ pcsc_exit(struct pcsc_context* context)
 	if (context->readers)
 		SCardFreeMemory(context->context, context->readers);
 	SCardReleaseContext(context->context);
+	free(context);
 }
 
 /*
